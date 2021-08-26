@@ -1,3 +1,5 @@
+\\ Mux 4:1
+
 design.sv
 module mux_4to1_case (a,b,c,d,sel,out);
 	parameter N=5;
@@ -44,4 +46,10 @@ mux_4to1_case #(.N(N))mux0( .a (a),.b (b),.c (c),.d (d),.sel (sel),.out (out));
   	#5 $finish;
   end
 endmodule
+
+\\ Cod-deco gray
+
+\\ Sumador Ripple
+
+\\ Alu
 
