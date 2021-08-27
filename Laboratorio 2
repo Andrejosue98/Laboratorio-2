@@ -90,5 +90,61 @@ initial begin
     #10 $finish;
 end    
 endmodule
+
 \\ Alu
+
+\\Carry lookahead adder
+module CLA(a,b,Ci,Sum,Co);
+
+parameter Size=32;
+
+input [Size-1:0] a;
+input [Size-1:0] b;
+input Ci;
+output [Size-1:0] Sum;
+output Co;
+
+wire [Size-1:0] aa;
+wire [Size-1:0] bb;
+wire [Size:0] carry;
+
+genvar j,i;
+generate 
+assign carry[0]=Ci;
+
+for(j=0; j < Size; j=j+1)begin
+assign aa[j]=a[j]&b[j];
+assign bb[j]=a[j]|b[j];
+assign carry[j+1]=aa[j]|(bb[j])&carry[j];
+
+end
+assign Co=carry[Size]; 
+
+ for(i = 0; i < Size; i = i+1) begin 
+ assign Sum[i] = a[i] ^ b[i] ^ carry[i];
+ end
+ endgenerate
+endmodulemodule CLATestBench();
+parameter Size =2;
+reg Ci;
+reg [Size-1:0] a;
+reg [Size-1:0] b;
+
+wire [Size-1:0] Sum;
+wire Co;
+
+CLA #(.Size(Size))U1(
+       .a(a[Size-1:0]),
+       .b(b[Size-1:0]),
+       .Ci(Ci),
+       .Sum(Sum[Size-1:0]),
+       .Co(Co)
+       );
+
+initial begin
+    a='b11; b='b01; Ci=1'b1;
+#10 a='b01; b='b01; Ci=1'b0;
+#10 $finish;
+end
+endmodule
 
