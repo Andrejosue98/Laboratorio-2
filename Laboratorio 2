@@ -50,6 +50,45 @@ endmodule
 \\ Cod-deco gray
 
 \\ Sumador Ripple
+module SumadorCompleto(a,b,Ci,Sum,Co);
+    input a, b,Ci;
+    output reg  Sum, Co;
+    always @(*)
+    begin
+    Sum = (a^b^Ci);
+    Co = (a&b | b&Ci | Ci&a);
+    end
 
+endmodule
+
+module RippleCarryAdder(Sum,Co,a,b,Ci);
+    input [7:0] a, b;
+    input Ci;
+    output [7:0]Sum;
+    output Co;
+    wire [6:0] carry;
+    SumadorCompleto U0(a[0],b[0],Ci,      Sum[0],carry[0]);
+    SumadorCompleto U1(a[1],b[1],carry[0],Sum[1],carry[1]);
+    SumadorCompleto U2(a[2],b[2],carry[1],Sum[2],carry[2]);
+    SumadorCompleto U3(a[3],b[3],carry[2],Sum[3],carry[3]);
+    SumadorCompleto U4(a[4],b[4],carry[3],Sum[4],carry[4]);
+    SumadorCompleto U5(a[5],b[5],carry[4],Sum[5],carry[5]);
+    SumadorCompleto U6(a[6],b[6],carry[5],Sum[6],carry[6]);
+    SumadorCompleto U7(a[7],b[7],carry[6],Sum[7],Co);
+endmodule
+module TestBenchRCA;
+    reg [7:0] a, b;
+    reg Ci;
+    wire [7:0] Sum; 
+    wire Co;
+    RippleCarryAdder prueba(.Sum(Sum),.Co(Co),.a(a),.b(b),.Ci(Ci));
+initial begin 
+     a= 8'b00000000; b= 8'b00000000; Ci=1'b0;
+    #10 a= 8'b00001001; b= 8'b00000111; Ci=1'b0;
+    #10 a= 8'b00000001; b= 8'b00000001; Ci=1'b1;
+    #10 a= 8'b11111111; b= 8'b00000001; Ci=1'b0;
+    #10 $finish;
+end    
+endmodule
 \\ Alu
 
